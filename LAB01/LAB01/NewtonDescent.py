@@ -1,0 +1,122 @@
+# Optimization for Engineers - Dr.Johannes Hild
+# Newton descent
+
+# Purpose: Find xmin to satisfy norm(gradf(xmin))<=eps
+# Iteration: x_k = x_k + d_k
+# d_k is the Newton direction
+
+# Input Definition:
+# f: objective class with methods .objective() and .gradient() and .hessian()
+# x0: column vector in R ** n(domain point)
+# eps: tolerance for termination. Default value: 1.0e-3
+# verbose: bool, if set to true, verbose information is displayed
+
+# Output Definition:
+# xmin: column vector in R ** n(domain point)
+
+# Required files:
+# d = PrecCGSolver(A,b) from PrecCGSolver.py
+
+# Test cases:
+# myObjective = bananaValleyObjective()
+# x0 = np.array([[0], [1]])
+# xmin = NewtonDescent(myObjective, x0, 1.0e-6, 1)
+# should return
+# xmin close to [[1],[1]]
+
+# Optimization for Engineers - Dr.Johannes Hild
+# Newton descent
+
+# Purpose: Find xmin to satisfy norm(gradf(xmin))<=eps
+# Iteration: x_k = x_k + d_k
+# d_k is the Newton direction
+
+# Input Definition:
+# f: objective class with methods .objective() and .gradient() and .hessian()
+# x0: column vector in R ** n(domain point)
+# eps: tolerance for termination. Default value: 1.0e-3
+# verbose: bool, if set to true, verbose information is displayed
+
+# Output Definition:
+# xmin: column vector in R ** n(domain point)
+
+# Required files:
+# d = PrecCGSolver(A,b) from PrecCGSolver.py
+
+# Test cases:
+# myObjective = bananaValleyObjective()
+# x0 = np.array([[0], [1]])
+# xmin = NewtonDescent(myObjective, x0, 1.0e-6, 1)
+# should return
+# xmin close to [[1],[1]]
+import numpy as np
+import PrecCGSolver as PCG
+#from bananaValleyObjective import bananaValleyObjective
+
+def matrnr():
+    # set your matriculation number here
+    matrnr = 23353068
+    return matrnr
+
+def NewtonDescent(f, x0: np.array, eps=1.0e-3, verbose=0):
+    if eps <= 0:
+        raise TypeError('range of eps is wrong!')
+
+    if verbose:
+        print('Start NewtonDescent...')
+
+    countIter = 0
+    x = x0
+
+    while True:
+        gradx = f.gradient(x)
+        if np.linalg.norm(gradx) <= eps:
+            break
+
+        if verbose:
+            print('Iteration:', countIter)
+            print('Current x:', x)
+            print('Gradient:', gradx)
+
+        # Compute the Newton direction
+        Bk = f.hessian(x)
+        dk = PCG.PrecCGSolver(Bk, -gradx)
+
+        if verbose:
+            print('Newton direction:', dk)
+
+        # Step 3a) is modified as per the instructions
+        # Step 3b) is ignored, so we set t_k = 1 directly
+        tk = 1
+        x = x + tk * dk
+
+        countIter = countIter + 1
+
+    if verbose:
+        gradx = f.gradient(x)
+        print('NewtonDescent terminated after', countIter, 'steps with norm of gradient =', np.linalg.norm(gradx))
+
+    return x
+'''
+# Test cases:
+myObjective = bananaValleyObjective()
+x0 = np.array([[0], [1]])
+xmin = NewtonDescent(myObjective, x0, 1.0e-6, 1)
+# should return
+# xmin close to [[1],[1]]
+print(xmin)  # Print the result
+
+'''
+
+
+
+
+
+
+
+
+
+
+
+
+
